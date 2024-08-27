@@ -1,20 +1,41 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import useAuth from "../../Hooks/useAuth";
 import { FaSignOutAlt, FaUser } from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function LoginComponent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null); // Estado para manejar errores
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { login } = useAuth();
+
+  const location = useLocation();
+  const [showNotification, setShowNotification] = useState(true);
+
+  useEffect(() => {
+    const message = location.state?.message;
+
+    if (message && showNotification) {
+      toast.success(message, {
+        position: "top-right",
+        autoClose: 10000,
+        onClose: () => setShowNotification(false)
+      });
+      
+      // Limpia el mensaje del estado de la ubicación
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, navigate, showNotification]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login({ email, password }); // Usamos la función login del contexto
+      await login({ email, password });
       navigate("/notes");
     } catch (error) {
       setError(error.message || "Failed to login");
@@ -25,6 +46,7 @@ export default function LoginComponent() {
     <div className="d-flex justify-content-center align-items-center">
       <div className="card" style={{ width: "28rem" }}>
         <div className="card-body">
+          <ToastContainer />
           {/* Pills navs */}
           <ul
             className="nav nav-pills nav-justified mb-3"
@@ -41,7 +63,8 @@ export default function LoginComponent() {
                 aria-controls="pills-login"
                 aria-selected="true"
               >
-                <FaUser className="me-1"/>Login
+                <FaUser className="me-1" />
+                Login
               </HashLink>
             </li>
             <li className="nav-item" role="presentation">
@@ -54,7 +77,8 @@ export default function LoginComponent() {
                 aria-controls="pills-register"
                 aria-selected="false"
               >
-                <FaSignOutAlt className="me-1"/>Register
+                <FaSignOutAlt className="me-1" />
+                Register
               </HashLink>
             </li>
           </ul>

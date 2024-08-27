@@ -1,0 +1,21 @@
+.quill-wrapper {
+    width: 100%;
+  }
+  
+  .quill-wrapper .ql-container {
+    height: 300px;
+  }
+  
+  .quill-wrapper .ql-editor {
+    font-size: 16px;
+  }
+  
+  /* Estilos adicionales para mejorar la responsividad */
+  @media (max-width: 768px) {
+    .quill-wrapper .ql-container {
+      height: 200px;
+    }
+    .quill-wrapper .ql-editor {
+      font-size: 14px;
+    }
+  }

@@ -3,10 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { registerUser } from "../../Service/Auth/LoginService";
 import { FaSignOutAlt, FaUser } from "react-icons/fa";
-import { validateConfirmPassword, validatePassword, validateUsername } from "../../utils/Validation";
+import {
+  validateConfirmPassword,
+  validatePassword,
+  validateUsername,
+} from "../../utils/Validation";
 
 export default function RegisterComponent() {
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -17,7 +21,7 @@ export default function RegisterComponent() {
     e.preventDefault();
 
     // Validate inputs
-    const usernameError = validateUsername(username);
+    const nameError = validateUsername(name);
     //const emailError = validateEmail(email);
     const passwordError = validatePassword(password);
     const confirmPasswordError = validateConfirmPassword(
@@ -25,16 +29,17 @@ export default function RegisterComponent() {
       confirmPassword
     );
 
-    if (usernameError || passwordError || confirmPasswordError) {
-      setError(
-        usernameError || passwordError || confirmPasswordError
-      );
+    if (nameError || passwordError || confirmPasswordError) {
+      setError(nameError || passwordError || confirmPasswordError);
       return;
     }
 
     try {
-      await registerUser({ username, email, password });
-      navigate("/login");
+      await registerUser({ name, email, password });
+      navigate("/login", {
+        state: { message: "Account successfully registered!" },
+      });
+      sessionStorage.removeItem("notificationShown");
     } catch (error) {
       setError(error.message || "Failed to register");
     }
@@ -100,14 +105,14 @@ export default function RegisterComponent() {
                 <div className="form-outline mb-4">
                   <input
                     type="text"
-                    id="registerUsername"
+                    id="registerName"
                     className="form-control"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     required
                   />
-                  <label className="form-label" htmlFor="registerUsername">
-                    Username
+                  <label className="form-label" htmlFor="registerName">
+                    Name
                   </label>
                 </div>
 

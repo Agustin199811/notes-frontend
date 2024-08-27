@@ -1,7 +1,7 @@
-export function validateUsername(username) {
-  const regex = /^[A-Za-z0-9]+$/;
-  if (!regex.test(username)) {
-    return "Username can only contain letters and numbers.";
+export function validateUsername(name) {
+  const regex = /^[A-Za-z]+$/;
+  if (!regex.test(name)) {
+    return "name can only contain letters.";
   }
   return null;
 }
