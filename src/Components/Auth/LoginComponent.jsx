@@ -26,7 +26,6 @@ export default function LoginComponent() {
         onClose: () => setShowNotification(false)
       });
       
-      // Limpia el mensaje del estado de la ubicación
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location, navigate, showNotification]);
@@ -135,6 +134,13 @@ export default function LoginComponent() {
                   <button type="submit" className="btn btn-dark btn-block mb-4">
                     Sign in
                   </button>
+                </div>
+
+                 {/* Forgot Password link */}
+                 <div className="text-center mb-3">
+                  <p>
+                    <Link to="/forgot-password">Forgot Password?</Link>
+                  </p>
                 </div>
 
                 {/* Register link */}

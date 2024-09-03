@@ -9,6 +9,8 @@ import PublicRoute from "./Routes/PublicRoute";
 import PrivateRoute from "./Routes/PrivateRoute";
 import HomeComponent from "./Components/Home/HomeComponent";
 import NoteCreateComponent from "./Components/Notes/NoteCreateComponent";
+import ForgotPasswordComponent from "./Components/Password/ForgotPasswordComponent";
+import ResetPasswordComponent from "./Components/Password/ResetPasswordComponent";
 
 function App() {
   return (
@@ -45,6 +47,8 @@ function App() {
                 </PrivateRoute>
               }
             />
+             <Route path="/forgot-password" element={<ForgotPasswordComponent />} />
+             <Route path="/reset-password" element={<ResetPasswordComponent />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

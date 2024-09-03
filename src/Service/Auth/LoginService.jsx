@@ -45,3 +45,22 @@ export const logoutUser = async () => {
     }
   }
 };
+
+
+export const forgotPassword = (email) => {
+    return axios.post(`${API_URL}/users/forgot-password`, null, {
+        params: { email }
+    });
+};
+
+export const resetPassword = (token, newPassword) => {
+    return axios.post(`${API_URL}/users/reset-password`, null, {
+        params: { token, newPassword }
+    });
+};
+
+export const validateResetToken = (token) => {
+  return axios.get(`${API_URL}/users/validate-reset-token`, {
+    params: { token }
+  });
+};
