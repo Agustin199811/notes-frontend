@@ -1,12 +1,13 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { useNavigate } from "react-router-dom";
-import { createNote } from "../../Service/Notes/NotesService";
+import { useNavigate, useParams } from "react-router-dom";
 import "../../resources/css/reactquill.css";
 import TurndownService from "turndown";
+import { getNoteById, updateNote } from "../../Service/Notes/NotesService";
 
-const NoteCreateComponent = () => {
+const NoteEditComponent = () => {
+  const { id } = useParams();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -14,6 +15,21 @@ const NoteCreateComponent = () => {
   const navigate = useNavigate();
   const quillRef = useRef();
   const turndownService = new TurndownService();
+
+  useEffect(() => {
+    const loadNote = async () => {
+      try {
+        const note = await getNoteById(id);
+        setTitle(note.title);
+        setContent(note.content);
+      } catch (error) {
+        console.error("Error loading note:", error);
+        setError("Failed to load note. Please try again.");
+      }
+    };
+
+    loadNote();
+  }, [id]);
 
   const handleContentChange = (value) => {
     setContent(value);
@@ -30,14 +46,13 @@ const NoteCreateComponent = () => {
       setError("");
       try {
         const markdownContent = convertToMarkdown(content);
-        await createNote({ title, content: markdownContent });
+        await updateNote(id, { title, content: markdownContent });
         navigate("/notes", {
-          state: { message: "Note successfully created!" },
+          state: { message: "Note successfully updated!" },
         });
-        sessionStorage.removeItem("notificationShown");
       } catch (error) {
-        console.error("Error creating note:", error);
-        setError("Failed to create note. Please try again.");
+        console.error("Error updating note:", error);
+        setError("Failed to update note. Please try again.");
       } finally {
         setIsLoading(false);
       }
@@ -50,7 +65,7 @@ const NoteCreateComponent = () => {
         <div className="col-md-8">
           <div className="card">
             <div className="card-header">
-              <h5 className="card-title">Create Note</h5>
+              <h5 className="card-title">Edit Note</h5>
             </div>
             <div className="card-body">
               <form onSubmit={handleSubmit}>
@@ -98,10 +113,10 @@ const NoteCreateComponent = () => {
                 <div className="text-center">
                   <button
                     type="submit"
-                    className=" btn btn-dark"
+                    className="btn btn-dark"
                     disabled={isLoading}
                   >
-                    {isLoading ? "Saving..." : "Save Note"}
+                    {isLoading ? "Updating..." : "Update Note"}
                   </button>
                 </div>
               </form>
@@ -113,4 +128,4 @@ const NoteCreateComponent = () => {
   );
 };
 
-export default NoteCreateComponent;
+export default NoteEditComponent;

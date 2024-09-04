@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { fetchNotes } from "../../Service/Notes/NotesService";
+import { deleteNote, fetchNotes } from "../../Service/Notes/NotesService";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useLocation, useNavigate } from "react-router-dom";
+import CardComponent from "../Card/CardComponent";
 
 function NotesListComponent() {
   const [notes, setNotes] = useState([]);
@@ -37,15 +38,35 @@ function NotesListComponent() {
     }
   }, [location, navigate, showNotification]);
 
+  const handleUpdate = (id) => {
+    navigate(`/update-note/${id}`);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteNote(id);
+      setNotes(notes.filter((note) => note.id !== id));
+      toast.success("Note deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting note:", error);
+      toast.error("Failed to delete note.");
+    }
+  };
+
   return (
-    <div>
+    <div className="container mt-4">
       <ToastContainer />
-      <h1>Notes</h1>
-      <ul>
+      <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         {notes.map((note) => (
-          <li key={note.id}>{note.content}</li>
+          <div className="col d-flex justify-content-center" key={note.id}>
+            <CardComponent
+              note={note}
+              onUpdate={handleUpdate}
+              onDelete={handleDelete}
+            />
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

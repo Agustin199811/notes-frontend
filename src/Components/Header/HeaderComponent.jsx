@@ -17,9 +17,12 @@ function HeaderComponent() {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+    <nav
+      className="navbar navbar-expand-lg bg-body-tertiary"
+      data-bs-theme="dark"
+    >
       <div className="container-fluid">
-        <span className="navbar-brand">Navbar</span>
+        <span className="navbar-brand">Notes</span>
         <button
           className="navbar-toggler"
           type="button"
@@ -77,12 +80,27 @@ function HeaderComponent() {
             </div>
             <li className="nav-item ms-auto">
               {isAuthenticated ? (
-                <button
-                  className="nav-link d-flex align-items-center btn btn-link"
-                  onClick={handleLogout}
-                >
-                  <FaDoorClosed className="me-1"/> Logout
-                </button>
+                <li className="nav-item dropdown">
+                  <button
+                    className="nav-link dropdown-toggle"
+                    href="#"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    Session
+                  </button>
+                  <ul className="dropdown-menu">
+                    <li>
+                      <button
+                        className="nav-link d-flex align-items-center btn btn-link"
+                        onClick={handleLogout}
+                      >
+                        <FaDoorClosed className="me-1" /> Logout
+                      </button>
+                    </li>
+                  </ul>
+                </li>
               ) : (
                 <Link
                   className="nav-link d-flex align-items-center"
