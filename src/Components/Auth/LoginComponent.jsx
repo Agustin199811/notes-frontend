@@ -18,14 +18,26 @@ export default function LoginComponent() {
 
   useEffect(() => {
     const message = location.state?.message;
+    const errorMessage = location.state?.errorMessage;
 
     if (message && showNotification) {
       toast.success(message, {
         position: "top-right",
         autoClose: 10000,
-        onClose: () => setShowNotification(false)
+        onClose: () => setShowNotification(false),
       });
-      
+    }
+
+    if (errorMessage && showNotification) {
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 10000,
+        onClose: () => setShowNotification(false),
+      });
+    }
+
+    // Redirigir y limpiar el estado después de mostrar la notificación
+    if (message || errorMessage) {
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location, navigate, showNotification]);

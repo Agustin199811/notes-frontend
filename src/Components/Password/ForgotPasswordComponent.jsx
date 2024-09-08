@@ -10,14 +10,16 @@ export default function ForgotPasswordComponent() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
     try {
       await forgotPassword(email);
-      //alert("Password reset link sent to your email.");
       navigate("/login", {
         state: { message: "Password reset link sent to your email." },
       });
     } catch (error) {
-      setError(error.message || "Failed to send password reset link");
+      navigate("/login", {
+        state: { errorMessage: error.message || "Failed to send password reset link." },
+      });
     }
   };
 
