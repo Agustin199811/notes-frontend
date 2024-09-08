@@ -112,7 +112,7 @@ export default function RegisterComponent() {
                     required
                   />
                   <label className="form-label" htmlFor="registerName">
-                    Name
+                    Names
                   </label>
                 </div>
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; // Importa SweetAlert2
 import useAuth from "../../Hooks/useAuth";
 import { FaBook, FaHome, FaDoorClosed, FaUser, FaTrash } from "react-icons/fa";
 import notes from "../../assets/notes.svg";
@@ -20,25 +21,44 @@ function HeaderComponent() {
 
   const handleDeleteAccount = async () => {
     try {
-      if (user && user.id) {
-        await deleteUser(user.id);
-        console.log("Account deleted, logging out and navigating to /login");
-        await logout();
-        navigate("/login", {
-          state: { message: "Account has been deleted successfully" },
-          replace: true
-        });
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "Do you really want to delete your account? This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel",
+      });
+
+      if (result.isConfirmed) {
+        if (user && user.id) {
+          await deleteUser(user.id);
+          await logout();
+          navigate("/login", {
+            state: { warningMessage: "Account has been deleted successfully" },
+            replace: true,
+          });
+
+          //Swal.fire("Deleted!", "Your account has been deleted.", "success");
+        } else {
+          Swal.fire("Error", "User ID is not available.", "error");
+        }
       } else {
-        alert("User ID is not available.");
+        Swal.fire("Cancelled", "Your account is safe.", "info");
       }
     } catch (error) {
       console.error("Error deleting account:", error);
-      alert(error.message);
+      Swal.fire("Error", error.message, "error");
     }
   };
 
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+    <nav
+      className="navbar navbar-expand-lg bg-body-tertiary"
+      data-bs-theme="dark"
+    >
       <div className="container-fluid">
         <img src={notes} alt="Notes App Logo" width="100" height="40" />
         <button
@@ -102,7 +122,10 @@ function HeaderComponent() {
                   </a>
                   <ul className="dropdown-menu dropdown-menu-end">
                     <li>
-                      <button className="dropdown-item" onClick={handleDeleteAccount}>
+                      <button
+                        className="dropdown-item"
+                        onClick={handleDeleteAccount}
+                      >
                         <FaTrash className="me-2" /> Delete Account
                       </button>
                     </li>

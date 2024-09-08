@@ -19,6 +19,7 @@ export default function LoginComponent() {
   useEffect(() => {
     const message = location.state?.message;
     const errorMessage = location.state?.errorMessage;
+    const warningMessage = location.state?.warningMessage;
 
     if (message && showNotification) {
       toast.success(message, {
@@ -36,12 +37,17 @@ export default function LoginComponent() {
       });
     }
 
-    // Redirigir y limpiar el estado después de mostrar la notificación
-    if (message || errorMessage) {
+    if (warningMessage && showNotification) {
+      toast.warning(warningMessage, {
+        position: "top-right",
+        autoClose: 10000,
+        onClose: () => setShowNotification(false),
+      });
+    }
+    if (message || errorMessage || warningMessage) {
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location, navigate, showNotification]);
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -148,8 +154,8 @@ export default function LoginComponent() {
                   </button>
                 </div>
 
-                 {/* Forgot Password link */}
-                 <div className="text-center mb-3">
+                {/* Forgot Password link */}
+                <div className="text-center mb-3">
                   <p>
                     <Link to="/forgot-password">Forgot Password?</Link>
                   </p>
